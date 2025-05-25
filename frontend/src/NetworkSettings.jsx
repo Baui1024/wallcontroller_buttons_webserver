@@ -62,7 +62,7 @@ function NetworkSettings() {
                 {editMode ? (
                   <>
                     <div className="dropdown pb-3">
-                        <label className="form-label">Mode:</label>
+                        <h5 className="form-label">Mode:</h5>
                         <button className="form-control btn btn-secondary dropdown-toggle" 
                                 type="button" 
                                 data-bs-toggle="dropdown" 
@@ -76,17 +76,17 @@ function NetworkSettings() {
                         </ul>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">IP Address:</label>
+                      <h5 className="form-label">IP Address:</h5>
                       <input type="text" className={`form-control ${config.mode === "Static" ? '' : 'inactive'}`}
                         name="ip" value={config.ip}  onChange={handleChange} readOnly={config.mode !== "Static"} />
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Netmask:</label>
+                      <h5 className="form-label">Netmask:</h5>
                       <input type="text" className={`form-control ${config.mode === "Static" ? '' : 'inactive'}`}
                         name="netmask" value={config.netmask}  onChange={handleChange} readOnly={config.mode !== "Static"} />
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Gateway:</label>
+                      <h5 className="form-label">Gateway:</h5>
                       <input type="text" className={`form-control ${config.mode === "Static" ? '' : 'inactive'}`}
                         name="gateway" value={config.gateway}  onChange={handleChange} readOnly={config.mode !== "Static"} />
                     </div>
@@ -102,19 +102,19 @@ function NetworkSettings() {
                 ) : (
                   <>
                     <div className="dropdown pb-3">
-                    <label className="form-label">Mode:</label>
+                    <h5 className="form-label">Mode:</h5>
                     <div className="form-control-plaintext">{current_config.mode}</div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">IP Address:</label>
+                      <h5 className="form-label">IP Address:</h5>
                       <div className="form-control-plaintext">{current_config.ip}</div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Netmask:</label>
+                      <h5 className="form-label">Netmask:</h5>
                       <div className="form-control-plaintext">{current_config.netmask}</div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Gateway:</label>
+                      <h5 className="form-label">Gateway:</h5>
                       <div className="form-control-plaintext">{current_config.gateway}</div>
                     </div>
                     <span className="row align-items-center justify-content-between">
