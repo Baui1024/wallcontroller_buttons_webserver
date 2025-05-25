@@ -27,9 +27,22 @@ def api_data():
 def home():
     return static_file('index.html', root=f"{project_path}/frontend/dist")
 
+@app.route('/api/config')
+def get_ip_config():
+    return {
+        "mode" : "DHCP",
+        "ip": "192.168.1.100",
+        "netmask": "255.255.255.0",
+        "gateway": "192.168.1.1"
+    }
+
+
 @app.route('/<filename:path>')
 def serve_static(filename):
+    print("requested IP")
     return static_file(filename, root=f"{project_path}/frontend/dist")
+
+
 
 if __name__ == '__main__':
     run(app, host='0.0.0.0', port=5000, debug=True, reloader=True)
