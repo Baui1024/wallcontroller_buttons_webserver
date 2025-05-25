@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple REST Server UI</title>
+  </head>
+  <body>
+    <h1>Simple REST Server</h1>
+    <div>
+      <p id="message">Message:</p>
+      <input type="text" id="newMessage" placeholder="Enter new message" />
+      <button onclick="updateMessage()">Update Message</button>
+    </div>
+
+    <script>
+      // Fetch data from API and display it
+      async function fetchData() {
+        const response = await fetch("/api/data");
+        const data = await response.json();
+        document.getElementById("message").textContent =
+          "Message: " + data.message;
+      }
+
+      // Update message using API
+      async function updateMessage() {
+        const newMessage = document.getElementById("newMessage").value;
+        const response = await fetch("/api/data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: newMessage }),
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+          fetchData();
+        }
+      }
+
+      // Fetch data on page load
+      window.onload = fetchData;
+    </script>
+  </body>
+</html>
