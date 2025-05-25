@@ -27,14 +27,21 @@ def api_data():
 def home():
     return static_file('index.html', root=f"{project_path}/frontend/dist")
 
-@app.route('/api/config')
+@app.route('/api/config', method=['GET', 'POST'])
 def get_ip_config():
-    return {
-        "mode" : "DHCP",
-        "ip": "192.168.1.100",
-        "netmask": "255.255.255.0",
-        "gateway": "192.168.1.1"
-    }
+    if request.method == 'POST':
+        new_config = request.json
+        # Here you would typically save the new configuration to a file or database
+        print("New configuration received:", new_config)
+        response.content_type = 'application/json'
+        return {"status": "success", "config": new_config}
+    else:
+        return {
+            "mode" : "DHCP",
+            "ip": "192.168.1.100",
+            "netmask": "255.255.255.0",
+            "gateway": "192.168.1.1"
+        }
 
 
 @app.route('/<filename:path>')
