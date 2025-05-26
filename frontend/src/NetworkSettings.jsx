@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 function NetworkSettings() {
 
     const [config, setConfig] = useState({ mode: '', ip: '', netmask: '', gateway: '' });
-    const [editMode, setEditMode] = useState(true);
+    const [editMode, setEditMode] = useState(false);
     const [current_config, setCurrentConfig] = useState({ mode: '', ip: '', netmask: '', gateway: '' });
     const [status, setStatus] = useState(null);
 
@@ -43,10 +43,10 @@ function NetworkSettings() {
         });
         const result = await response.json();
         if (result.status === "success") {
-            setStatus("✅ Saved successfully");
+            setStatus("✅ "+result.message);
             setCurrentConfig(config); // Update current config only on success
         }else {
-            setStatus("❌ Failed to save configuration");
+            setStatus("❌ " + result.message);
         }
         } catch (err) {
         setStatus(`❌ Error: ${err.message}`);
