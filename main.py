@@ -1,35 +1,19 @@
 #!/usr/bin/python3
-
-
-import os
 from bottle import Bottle, request, response, run, static_file
 from ip_tool import IPTools  # Assuming you have an ip_tools.py with the IPTools class
 import subprocess
 import threading
 
+
 app = Bottle()
-project_path = os.path.abspath("")
 ip_tools = IPTools()
-
-# Data storage (for demonstration purposes)
-data = {"message": "Hello, World!"}
-
-# REST API endpoint
-@app.route('/api/data', method=['GET', 'POST'])
-def api_data():
-    if request.method == 'POST':
-        new_data = request.json
-        data.update(new_data)
-        response.content_type = 'application/json'
-        return {"status": "success", "data": data}
-    response.content_type = 'application/json'
-    return data
 
 # Web UI route
 @app.route('/')
 # @app.route('/<:re:.*>')
 def home():
-    return static_file('index.html', root=f"{project_path}/frontend/dist")
+    return static_file('index.html', root="/usr/bin/webserver/frontend/dist")
+
 
 def restart_network_delayed():
     def restart():
@@ -69,12 +53,11 @@ def get_ip_config():
 
 @app.route('/<filename:path>')
 def serve_static(filename):
-    print("requested IP")
-    return static_file(filename, root=f"{project_path}/frontend/dist")
+    return static_file(filename, root="/usr/bin/webserver/frontend/dist")
 
 
 
 if __name__ == '__main__':
-    run(app, host='0.0.0.0', port=80, debug=True, reloader=True)
+    run(app, host='0.0.0.0', port=80, quiet=True, debug=False, reloader=True)
 
 
