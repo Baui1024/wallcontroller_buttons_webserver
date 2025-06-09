@@ -17,12 +17,12 @@ class IPTools:
         gws = netifaces.gateways()
         self.gateway = gws['default'][netifaces.AF_INET][0]
         u = Uci()
-        self.mode = u.get("network","wan","proto")
+        self.mode = u.get("network","lan","proto")
         if self.mode == 'static':
             self.mode = 'Static'
         elif self.mode == 'dhcp':
             self.mode = 'DHCP'
-        self.hostname = u.get("network","wan","hostname")
+        self.hostname = u.get("network","lan","hostname")
         
         return {
             "mode": self.mode,
@@ -35,18 +35,18 @@ class IPTools:
         """Set the IP configuration."""
         u = Uci()
         if mode == "Static":
-            u.set("network","wan","proto", "static")
+            u.set("network","lan","proto", "static")
         else:
-            u.set("network","wan","proto", "dhcp")
-        u.set("network","wan","ipaddr", ip)
-        u.set("network","wan","netmask", netmask)
+            u.set("network","lan","proto", "dhcp")
+        u.set("network","lan","ipaddr", ip)
+        u.set("network","lan","netmask", netmask)
         if gateway:
-            u.set("network","wan","gateway", gateway)
+            u.set("network","lan","gateway", gateway)
         else:
-            u.unset("network","wan","gateway")
+            u.unset("network","lan","gateway")
         
         try:
-            u.commit('network',"wan")
+            u.commit('network',"lan")
             return True
         except Exception as e:
             print(f"Error setting IP configuration: {e}")
