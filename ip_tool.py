@@ -22,8 +22,13 @@ class IPTools:
             self.mode = 'Static'
         elif self.mode == 'dhcp':
             self.mode = 'DHCP'
-        self.hostname = u.get("network","lan","hostname")
-        
+        system =  u.get("system")
+        for obj in system:
+            for key in system[obj]:
+                if key == "hostname":
+                    self.hostname = system[obj][key]
+                    break
+
         return {
             "mode": self.mode,
             "ip": self.ip,
