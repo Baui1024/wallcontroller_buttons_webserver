@@ -1,3 +1,12 @@
+:root{
+  --sm: 576px;
+  --md: 768px;
+  --lg: 992px;
+  --xl: 1200px;
+  --xxl: 1400px;
+  --xs: 576px;
+}
+
 body{
   justify-content: center;
 }
@@ -5,3 +14,20 @@ body{
 .inactive{
   opacity: 0.5;
 }
+
+.navbar-nav {
+    float:none;
+    margin:0 auto;
+    /* display: block; */
+    text-align: center;
+}
+
+.navbar-nav > li {
+    display: inline-block;
+    float:none;
+}
+
+@media (min-width: 992px) {
+.navbar-brand {
+    position: fixed;
+}}

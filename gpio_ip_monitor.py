@@ -14,9 +14,6 @@ class Monitor:
         self.min_time = 5
         self.max_time = 10
         self.ip_tools = IPTools()
-        # self.open_gpio()
-        # self.thread = threading.Thread(target=self.watch_multiple_line_values, daemon=True)
-        # self.thread.start()
     
     async def open_gpio(self):
         gpio = MT7688GPIOAsync(self.pin)

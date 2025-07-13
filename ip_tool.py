@@ -1,5 +1,8 @@
 import netifaces
-from uci import Uci
+try:
+    from uci import Uci
+except ImportError:
+    EMULATE_UCI = True
 
 class IPTools:
     def __init__(self):
@@ -10,6 +13,13 @@ class IPTools:
         self.mode = "DHCP"
 
     def get_ip_config(self) -> dict:
+        if EMULATE_UCI:
+                    return {
+            "mode": "DHCP Emulation",
+            "ip": "127.0.0.0",
+            "netmask": "255.255.255.0",
+            "gateway": "127.0.0.1"
+        }
         """Get the current IP configuration."""
         addrss = netifaces.ifaddresses('eth0')
         self.ip = addrss[netifaces.AF_INET][0]['addr']
@@ -37,6 +47,9 @@ class IPTools:
         }
     
     def set_ip_config(self, mode: str, ip: str, netmask: str, gateway: str = None) -> bool:
+        if EMULATE_UCI:
+            print(f"Emulated UCI: Setting IP config to {mode}, {ip}, {netmask}, {gateway}")
+            return True
         """Set the IP configuration."""
         u = Uci()
         if mode == "Static":

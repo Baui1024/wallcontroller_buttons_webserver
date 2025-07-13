@@ -3,16 +3,21 @@ from bottle import Bottle, request, response, run, static_file
 from ip_tool import IPTools  # Assuming you have an ip_tools.py with the IPTools class
 import subprocess
 import threading
-
+try:
+    import uci
+except ImportError:
+    EMULATE_UCI = True
 
 app = Bottle()
 ip_tools = IPTools()
 
 # Web UI route
 @app.route('/')
-# @app.route('/<:re:.*>')
 def home():
-    return static_file('index.html', root="/usr/bin/webserver/frontend/dist")
+    if EMULATE_UCI:
+        return static_file('index.html', root="frontend/dist")
+    else:
+        return static_file('index.html', root="/usr/bin/webserver/frontend/dist")
 
 
 def restart_network_delayed():
@@ -53,11 +58,17 @@ def get_ip_config():
 
 @app.route('/<filename:path>')
 def serve_static(filename):
-    return static_file(filename, root="/usr/bin/webserver/frontend/dist")
+    if EMULATE_UCI:
+        return static_file(filename, root="frontend/dist")
+    else:
+        return static_file(filename, root="/usr/bin/webserver/frontend/dist")
 
 
 
 if __name__ == '__main__':
-    run(app, host='0.0.0.0', port=80, quiet=True, debug=False, reloader=True)
-
+    if EMULATE_UCI:
+        print("Emulating UCI, not actually changing network settings.")
+        run(app, host='0.0.0.0', port=8080, quiet=False, debug=False, reloader=True)
+    else:
+        run(app, host='0.0.0.0', port=8080, quiet=True, debug=False, reloader=True)
 
