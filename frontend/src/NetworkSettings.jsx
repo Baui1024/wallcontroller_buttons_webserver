@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
+import StatusMessage, { useStatus } from './StatusMessage';
 
 function NetworkSettings() {
-
+    const { status, setSuccessStatus, setErrorStatus, clearStatus } = useStatus();
     const [config, setConfig] = useState({ mode: '', ip: '', netmask: '', gateway: '' });
     const [editMode, setEditMode] = useState(false);
     const [current_config, setCurrentConfig] = useState({ mode: '', ip: '', netmask: '', gateway: '' });
-    const [status, setStatus] = useState(null);
+
 
     useEffect(() => {
         fetch('/api/config')
@@ -35,30 +35,28 @@ function NetworkSettings() {
 
     const saveConfig = async () => {
         try {
-        setEditMode(false);
-        const response = await fetch('/api/config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(config)
-        });
-        const result = await response.json();
-        if (result.status === "success") {
-            setStatus("✅ "+result.message);
-            setCurrentConfig(config); // Update current config only on success
-        }else {
-            setStatus("❌ " + result.message);
-        }
+            setEditMode(false);
+            const response = await fetch('/api/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+            const result = await response.json();
+            if (result.status === "success") {
+                setSuccessStatus(result.message);
+                setCurrentConfig(config); // Update current config only on success
+            }else {
+                setErrorStatus(result.message);
+            }
         } catch (err) {
-        setStatus(`❌ Error: ${err.message}`);
+            setErrorStatus(err.message);
         }
     };
     
     return (
         <>
             <div className="col col-12 wallcontroller__container">
-                <h2 className="mb-4"> Device Network Settings</h2>
-
-
+                <h2 className="mb-4">Network Settings</h2>
                 {editMode ? (
                   <>
                     <div className="dropdown pb-3">
@@ -102,8 +100,8 @@ function NetworkSettings() {
                 ) : (
                   <>
                     <div className="dropdown pb-3">
-                    <h5 className="form-label">Mode:</h5>
-                    <div className="form-control-plaintext">{current_config.mode}</div>
+                        <h5 className="form-label">Mode:</h5>
+                        <div className="form-control-plaintext">{current_config.mode}</div>
                     </div>
                     <div className="mb-3">
                       <h5 className="form-label">IP Address:</h5>
