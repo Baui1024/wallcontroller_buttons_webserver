@@ -31,7 +31,7 @@ function App() {
           setPage(pages[1]);
         } else if (result.authenticated && !result.accessControl) {
           // No access control, user can access without login
-          setPage(pages[4]);
+          setPage(pages[1]);
         } else {
           // Not authenticated, stay on login page
           setPage(pages[0]);

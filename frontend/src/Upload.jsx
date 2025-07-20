@@ -5,7 +5,7 @@ import StatusMessage, { useStatus } from './StatusMessage';
 function Upload({ fetchVersion }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const { status, setSuccessStatus, setErrorStatus, clearStatus } = useStatus();
-  const [firmwareUploaded, setFirmwareUploaded] = useState(true);
+  const [firmwareUploaded, setFirmwareUploaded] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [firmwareUpgradeStarted, setFirmwareUpgradeStarted] = useState(false);
   const [firmwareProgress, setFirmwareProgress] = useState(0);
