@@ -90,14 +90,19 @@ function Upload({ fetchVersion }) {
             // Start checking server availability when we reach 99%
             serverCheckInterval = setInterval(async () => {
               try {
-                await fetchVersion(); // Try to reach the server
-                // If successful, complete to 100% and stop checking
-                setFirmwareProgress(100);
-                setFirmwareUpdateCompleted(true);
-                setFirmwareUpgradeStarted(false); // Reset upgrade state
-                clearInterval(serverCheckInterval);
-                setSuccessStatus('Firmware upgrade completed successfully! The device is now running the new firmware.');
-              } catch (error) {
+                let result = await fetchVersion(); // Try to reach the server
+                console.log('Checking server availability...', result);
+                if (result) {
+                    // If successful, complete to 100% and stop checking
+                    setFirmwareProgress(100);
+                    setFirmwareUpdateCompleted(true);
+                    setFirmwareUploaded(false); // Reset firmware uploaded status
+                    setIsUploading(false); // Stop loading
+                    setFirmwareUpgradeStarted(false); // Reset upgrade state
+                    clearInterval(serverCheckInterval);
+                    setSuccessStatus('Firmware upgrade completed successfully! The device is now running the new firmware.');
+                }
+                } catch (error) {
                 // Server not reachable yet, keep checking
                 console.log('Server not reachable yet, continuing to check...');
               }
@@ -303,7 +308,7 @@ function Upload({ fetchVersion }) {
                             Uploading...
                         </>
                     ) : (
-                        'Update'
+                        'Upload'
                     )}
                     </button>
                 </span>
