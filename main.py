@@ -129,7 +129,7 @@ def get_version():
 
     else:
         try:
-            with open('/etc/webserver/files/version.json', 'r') as f:
+            with open('/etc/wallcontroller/version.json', 'r') as f:
                 version = f.read().strip()
             return json.loads(version)
         except FileNotFoundError:
@@ -202,6 +202,15 @@ def security_config():
         
         # Set proper permissions (readable only by root)
         os.chmod(SECURITY_CONFIG_FILE, 0o600)
+
+        # Create session
+        session_id = create_session(config_to_save["username"])
+        
+        # Set cookie
+        response.set_cookie('session_id', session_id, 
+                          max_age=SESSION_DURATION, 
+                          httponly=True, 
+                          secure=False)  # Set to True in production with HTTPS
         
         return {"status": "success", "message": "Security settings updated"}
     
@@ -372,4 +381,4 @@ if __name__ == '__main__':
         print("Emulating UCI, not actually changing network settings.")
         run(app, host='0.0.0.0', port=8080, quiet=False, debug=False, reloader=True)
     else:
-        run(app, host='0.0.0.0', port=8080, quiet=True, debug=False, reloader=True)
+        run(app, host='0.0.0.0', port=80, quiet=True, debug=False, reloader=True)

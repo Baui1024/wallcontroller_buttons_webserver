@@ -112,7 +112,7 @@ function Upload({ fetchVersion }) {
           }
           return prev + 1;
         });
-      }, 2000); // Update every 2 seconds
+      }, 3000); // Update every 3 seconds
     }
 
     // Cleanup intervals when component unmounts or upgrade stops

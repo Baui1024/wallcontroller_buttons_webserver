@@ -1,6 +1,7 @@
 import netifaces
 try:
     from uci import Uci
+    EMULATE_UCI = False
 except ImportError:
     EMULATE_UCI = True
 

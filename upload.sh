@@ -1,4 +1,4 @@
-ip=192.168.178.90
+ip=192.168.177.55
 
 ssh root@$ip "mkdir -p /usr/bin/webserver/frontend"
 scp webserver.init root@$ip:/etc/init.d/webserver
