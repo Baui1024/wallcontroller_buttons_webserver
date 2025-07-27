@@ -4,7 +4,8 @@ import StatusMessage, { useStatus } from './StatusMessage';
 
 
 function Security({accessControl, setAccessControl}) {
-    
+
+    const [isSaving, setSaving] = useState(false);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [editMode, setEditMode] = useState(false);
@@ -31,6 +32,7 @@ function Security({accessControl, setAccessControl}) {
     };
 
     const saveConfig = async () => {
+        setSaving(true);
         try {
             const securityData = {
                 accessControl,
@@ -58,6 +60,8 @@ function Security({accessControl, setAccessControl}) {
             }
         } catch (err) {
             setErrorStatus(`Error: ${err.message}`);
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -105,8 +109,15 @@ function Security({accessControl, setAccessControl}) {
                             Cancel
                         </button>
                         <button className="col m-2 btn btn-primary" onClick={saveConfig}>
-                            Save
-                        </button>
+                        {isSaving ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Saving...
+                        </>
+                        ) : (
+                            'Save'
+                        )}
+                            </button>
                     </span>
                 </> 
             ) : (
