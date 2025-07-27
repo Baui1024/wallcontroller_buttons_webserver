@@ -332,21 +332,33 @@ def firmware_upload():
             response.status = 400
             return {"status": "error", "message": "Only .bin files are allowed"}
 
-        # Check file size (limit to 20MB)
+        # Check file size (limit to 20MB) and stream to avoid memory issues
         MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB in bytes
+        CHUNK_SIZE = 8192  # 8KB chunks for streaming
 
-        # Read file content to check size
-        file_content = upload.file.read()
-        if len(file_content) > MAX_FILE_SIZE:
-            response.status = 400
-            return {"status": "error", "message": "File too large. Maximum size is 20MB"}
-
-        # Save file to /tmp
+        # Save file to /tmp with streaming to avoid memory issues
         output_path = "/tmp/firmware.bin"
+        total_size = 0
         
         try:
             with open(output_path, 'wb') as f:
-                f.write(file_content)
+                # Stream the file in chunks to avoid loading entire file into memory
+                while True:
+                    chunk = upload.file.read(CHUNK_SIZE)
+                    if not chunk:
+                        break
+                    
+                    total_size += len(chunk)
+                    
+                    # Check size limit while streaming
+                    if total_size > MAX_FILE_SIZE:
+                        # Remove partial file and return error
+                        f.close()
+                        os.remove(output_path)
+                        response.status = 400
+                        return {"status": "error", "message": "File too large. Maximum size is 20MB"}
+                    
+                    f.write(chunk)
             
             # Set appropriate permissions
             os.chmod(output_path, 0o644)
@@ -355,14 +367,21 @@ def firmware_upload():
                 "status": "success",
                 "message": f"Firmware uploaded successfully as {output_path}",
                 "filename": upload.filename,
-                "size": len(file_content)
+                "size": total_size
             }
             
         except IOError as e:
+            # Clean up partial file on error
+            if os.path.exists(output_path):
+                os.remove(output_path)
             response.status = 500
             return {"status": "error", "message": f"Failed to save file: {str(e)}"}
 
     except Exception as e:
+        # Clean up partial file on error
+        output_path = "/tmp/firmware.bin"
+        if os.path.exists(output_path):
+            os.remove(output_path)
         response.status = 500
         return {"status": "error", "message": f"Upload failed: {str(e)}"}
 
