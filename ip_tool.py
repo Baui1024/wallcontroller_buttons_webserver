@@ -62,8 +62,10 @@ class IPTools:
         if gateway:
             u.set("network","lan","gateway", gateway)
         else:
-            u.unset("network","lan","gateway")
-        
+            try:
+                u.delete("network","lan","gateway")
+            except Exception as e:
+                print("no gateway to delete")
         try:
             u.commit('network',"lan")
             return True
