@@ -26,7 +26,10 @@ class IPTools:
         self.ip = addrss[netifaces.AF_INET][0]['addr']
         self.netmask = addrss[netifaces.AF_INET][0]['netmask']
         gws = netifaces.gateways()
-        self.gateway = gws['default'][netifaces.AF_INET][0]
+        try:
+            self.gateway = gws['default'][netifaces.AF_INET][0]
+        except Exception:
+            self.gateway = ""
         u = Uci()
         self.mode = u.get("network","lan","proto")
         if self.mode == 'static':

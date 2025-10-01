@@ -1,4 +1,4 @@
-ip=192.168.177.213
+ip=192.168.177.235
 
 
 ssh root@$ip "mkdir -p /usr/bin/webserver/frontend"

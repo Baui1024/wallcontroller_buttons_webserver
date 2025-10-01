@@ -151,10 +151,10 @@ def get_ip_config():
             return {"status": "error", "message": "IP address must be a private IP"}
         if not ip_tools.is_valid_ip(new_config.get('netmask', '')):
             response.status = 400
-            return {"status": "error", "message": "Invalid IP address"}
-        if not ip_tools.is_valid_ip(new_config.get('gateway', '')):
+            return {"status": "error", "message": "Invalid Netmask"}
+        if new_config.get('gateway', '') != "" and not ip_tools.is_valid_ip(new_config.get('gateway', '')):
             response.status = 400
-            return {"status": "error", "message": "Invalid IP address"}
+            return {"status": "error", "message": "Invalid Gateway address"}
         ip_tools.set_ip_config(
             mode=new_config.get('mode', 'DHCP'),
             ip=new_config.get('ip', ''),

@@ -2,6 +2,7 @@ import websockets
 import asyncio
 from mt7688gpio import MT7688GPIOAsync
 from ip_tool import IPTools
+import subprocess
 
 import json
 import time
@@ -40,15 +41,16 @@ class Monitor:
                     mode="Static",
                     ip="192.168.100.100",
                     netmask="255.255.255.0")
-            for x in range(3):
-                for i in range(16):
-                    with open(f"/sys/class/leds/pca963x:led{i}/brightness", 'w') as f:
-                        f.write("255")
-                time.sleep(0.2)
-                for i in range(16):
-                    with open(f"/sys/class/leds/pca963x:led{i}/brightness", 'w') as f:
-                        f.write("0")
-                time.sleep(0.2)
+                for x in range(3):
+                    for i in range(16):
+                        with open(f"/sys/class/leds/pca963x:led{i}/brightness", 'w') as f:
+                            f.write("255")
+                    time.sleep(0.2)
+                    for i in range(16):
+                        with open(f"/sys/class/leds/pca963x:led{i}/brightness", 'w') as f:
+                            f.write("0")
+                    time.sleep(0.2)
+                subprocess.run(["/etc/init.d/network", "restart"])
 
 if __name__ == "__main__":
     monitor = Monitor()
