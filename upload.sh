@@ -1,4 +1,4 @@
-ip=192.168.177.178
+ip=192.168.177.250
 
 
 sshpass -f "passwordfile" ssh root@$ip "mkdir -p /usr/bin/webserver/frontend"

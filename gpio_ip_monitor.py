@@ -41,6 +41,7 @@ class Monitor:
                     mode="Static",
                     ip="192.168.100.100",
                     netmask="255.255.255.0")
+                subprocess.run(["/etc/init.d/gpio-daemon", "stop"]) # Stop the GPIO daemon to free the LEDs for blinking
                 for x in range(3):
                     for i in range(16):
                         with open(f"/sys/class/leds/pca963x:led{i}/brightness", 'w') as f:
@@ -51,6 +52,7 @@ class Monitor:
                             f.write("0")
                     time.sleep(0.2)
                 subprocess.run(["/etc/init.d/network", "restart"])
+                subprocess.run(["/etc/init.d/gpio-daemon", "start"]) 
 
 if __name__ == "__main__":
     monitor = Monitor()
