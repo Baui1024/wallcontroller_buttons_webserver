@@ -314,7 +314,7 @@ function Upload({ fetchVersion }) {
                 </span>
                 }
                 <p className="text-muted mt-2">Firmware files must be in binary format (.bin) and less than 20 MB in size.</p>
-                <p className="text-muted">After uploading, the device will automatically reboot to apply the new firmware.</p>
+                <p className="text-muted">After starting the upgrade, the device will automatically reboot to apply the new firmware.</p>
                 <p className="text-muted">Ensure you have a backup of your current firmware before uploading a new one.</p>
                 <StatusMessage message={status} onClear={clearStatus} />
             </>) :
