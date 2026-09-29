@@ -434,6 +434,6 @@ def serve_static(filename):
 if __name__ == "__main__":
     if EMULATE_UCI:
         print("Emulating UCI, not actually changing network settings.")
-        run(app, host="0.0.0.0", port=8080, quiet=False, debug=False, reloader=True)
+        run(app, host="0.0.0.0", port=8080, quiet=False, debug=False)
     else:
-        run(app, host="127.0.0.1", port=8080, quiet=True, debug=False, reloader=True)
+        run(app, host="127.0.0.1", port=8080, quiet=True, debug=False)
