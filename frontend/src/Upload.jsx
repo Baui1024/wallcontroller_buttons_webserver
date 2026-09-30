@@ -155,17 +155,15 @@ function Upload({ fetchVersion }) {
         // Multiple source routes, so double check validity
         if (!dataRefs.files || !dataRefs.input) return;
 
-        const name = dataRefs.input.getAttribute('data-post-name');
-        if (!name) return;
-
-        const formData = new FormData();
-        formData.append(name, dataRefs.files[0]); // Only upload first file for firmware
+        const file = dataRefs.files[0]; // Only upload first file for firmware
         setFirmwareUploaded(false); // Reset firmware uploaded status
         setIsUploading(true); // Start loading
 
-        const response = await fetch("/api/firmware_upload", {
+        // Send the raw file instead of multipart form data, the device parses it much faster
+        const response = await fetch(`/api/firmware_upload?filename=${encodeURIComponent(file.name)}`, {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/octet-stream' },
+            body: file
         })
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

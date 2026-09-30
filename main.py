@@ -396,71 +396,55 @@ def firmware_update():
 @app.route("/api/firmware_upload", method="POST")
 @require_auth
 def firmware_upload():
-    """Handle firmware file uploads"""
+    """Handle firmware uploads sent as the raw request body (application/octet-stream).
+
+    Reading wsgi.input directly avoids Bottle's multipart parsing, which spools the
+    body to temp files and is very slow on the device CPU.
+    """
+    MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB in bytes
+    CHUNK_SIZE = 256 * 1024
+    output_path = "/tmp/firmware.bin"
+
+    filename = request.query.get("filename", "")
+    if not filename.lower().endswith(".bin"):
+        response.status = 400
+        return {"status": "error", "message": "Only .bin files are allowed"}
+
+    content_length = request.content_length
+    if content_length <= 0:
+        response.status = 400
+        return {"status": "error", "message": "No file uploaded"}
+    if content_length > MAX_FILE_SIZE:
+        response.status = 413
+        return {"status": "error", "message": "File too large. Maximum size is 20MB"}
+
+    stream = request.environ["wsgi.input"]
+    remaining = content_length
     try:
-        # Get the uploaded file
-        upload = request.files.get("firmware")
+        with open(output_path, "wb") as f:
+            # Never read past Content-Length, the WSGI input would block
+            while remaining > 0:
+                chunk = stream.read(min(CHUNK_SIZE, remaining))
+                if not chunk:
+                    break
+                f.write(chunk)
+                remaining -= len(chunk)
 
-        if not upload:
+        if remaining > 0:
+            os.remove(output_path)
             response.status = 400
-            return {"status": "error", "message": "No file uploaded"}
+            return {"status": "error", "message": "Upload incomplete"}
 
-        # Check file extension
-        if not upload.filename.lower().endswith(".bin"):
-            response.status = 400
-            return {"status": "error", "message": "Only .bin files are allowed"}
-
-        # Check file size (limit to 20MB) and stream to avoid memory issues
-        MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB in bytes
-        CHUNK_SIZE = 8192  # 8KB chunks for streaming
-
-        # Save file to /tmp with streaming to avoid memory issues
-        output_path = "/tmp/firmware.bin"
-        total_size = 0
-
-        try:
-            with open(output_path, "wb") as f:
-                # Stream the file in chunks to avoid loading entire file into memory
-                while True:
-                    chunk = upload.file.read(CHUNK_SIZE)
-                    if not chunk:
-                        break
-
-                    total_size += len(chunk)
-
-                    # Check size limit while streaming
-                    if total_size > MAX_FILE_SIZE:
-                        # Remove partial file and return error
-                        f.close()
-                        os.remove(output_path)
-                        response.status = 400
-                        return {
-                            "status": "error",
-                            "message": "File too large. Maximum size is 20MB",
-                        }
-
-                    f.write(chunk)
-
-            # Set appropriate permissions
-            os.chmod(output_path, 0o644)
-
-            return {
-                "status": "success",
-                "message": f"Firmware uploaded successfully as {output_path}",
-                "filename": upload.filename,
-                "size": total_size,
-            }
-
-        except IOError as e:
-            # Clean up partial file on error
-            if os.path.exists(output_path):
-                os.remove(output_path)
-            response.status = 500
-            return {"status": "error", "message": f"Failed to save file: {str(e)}"}
+        os.chmod(output_path, 0o644)
+        return {
+            "status": "success",
+            "message": f"Firmware uploaded successfully as {output_path}",
+            "filename": filename,
+            "size": content_length,
+        }
 
     except Exception as e:
         # Clean up partial file on error
-        output_path = "/tmp/firmware.bin"
         if os.path.exists(output_path):
             os.remove(output_path)
         response.status = 500
