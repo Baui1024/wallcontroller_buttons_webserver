@@ -80,7 +80,7 @@ function Upload({ fetchVersion }) {
     let serverCheckInterval;
     
     if (firmwareUpgradeStarted) {
-      // Start progress from 0 and increment every 2 seconds
+      // Start progress from 0 and increment every 2.4 seconds (~4 minutes to 99%)
       setFirmwareProgress(0);
       progressInterval = setInterval(() => {
         setFirmwareProgress(prev => {
@@ -112,7 +112,7 @@ function Upload({ fetchVersion }) {
           }
           return prev + 1;
         });
-      }, 3000); // Update every 3 seconds
+      }, 2400); // Update every 2.4 seconds
     }
 
     // Cleanup intervals when component unmounts or upgrade stops
@@ -321,9 +321,9 @@ function Upload({ fetchVersion }) {
             (
                 <>
                 <p className="text-muted">
-                  {firmwareProgress < 99 
+                  {firmwareProgress < 60 
                     ? "Firmware upgrade in progress... This can take a couple of minutes."
-                    : firmwareProgress === 99 
+                    : firmwareProgress === 60 
                     ? "Firmware upgrade almost complete. Waiting for device to restart..."
                     : "Firmware upgrade completed successfully!"
                   }

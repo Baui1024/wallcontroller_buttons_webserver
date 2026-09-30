@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import StatusMessage, { useStatus } from './StatusMessage';
+import WebSocketToken from './WebSocketToken';
 
 
 function Security({accessControl, setAccessControl}) {
@@ -150,6 +151,7 @@ function Security({accessControl, setAccessControl}) {
             )}
             <StatusMessage message={status} onClear={clearStatus} />
         </div>
+        <WebSocketToken />
     </>
   );
 }

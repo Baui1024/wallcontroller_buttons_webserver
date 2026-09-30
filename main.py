@@ -80,6 +80,26 @@ def get_session(session_id):
     return session
 
 
+def load_security_config():
+    try:
+        with open(SECURITY_CONFIG_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+
+def save_security_config(config):
+    config_dir = os.path.dirname(SECURITY_CONFIG_FILE)
+    if config_dir and not os.path.exists(config_dir):
+        os.makedirs(config_dir, exist_ok=True)
+
+    with open(SECURITY_CONFIG_FILE, "w") as f:
+        json.dump(config, f)
+
+    # Set proper permissions (readable only by root)
+    os.chmod(SECURITY_CONFIG_FILE, 0o600)
+
+
 def require_auth(func):
     """Decorator to require authentication"""
 
@@ -206,26 +226,18 @@ def security_config():
                 "message": "Password required when access control is enabled",
             }
 
-        # Prepare config to save
-        config_to_save = {
-            "accessControl": new_config.get("accessControl", False),
-            "username": new_config.get("username", ""),
-        }
+        # Update only the access control keys, other settings (websocket token) stay
+        config_to_save = load_security_config()
+        config_to_save["accessControl"] = new_config.get("accessControl", False)
+        config_to_save["username"] = new_config.get("username", "")
 
         # Hash password if provided
         if new_config.get("password"):
             config_to_save["passwordHash"] = hash_password(new_config["password"])
+        else:
+            config_to_save.pop("passwordHash", None)
 
-        # Save to file
-        config_dir = os.path.dirname(SECURITY_CONFIG_FILE)
-        if config_dir and not os.path.exists(config_dir):
-            os.makedirs(config_dir, exist_ok=True)
-
-        with open(SECURITY_CONFIG_FILE, "w") as f:
-            json.dump(config_to_save, f)
-
-        # Set proper permissions (readable only by root)
-        os.chmod(SECURITY_CONFIG_FILE, 0o600)
+        save_security_config(config_to_save)
 
         # Create session
         session_id = create_session(config_to_save["username"])
@@ -254,6 +266,38 @@ def security_config():
             }
         except FileNotFoundError:
             return {"accessControl": False, "username": "", "password": ""}
+
+
+@app.route("/api/ws_token", method=["GET", "POST"])
+@require_auth
+def ws_token_config():
+    """Optional token websocket clients (e.g. Q-SYS) must send in the X-Api-Key header.
+    Read by gpio-daemon on every new connection."""
+    config = load_security_config()
+
+    if request.method == "POST":
+        data = request.json
+        enabled = bool(data.get("enabled"))
+        token = (data.get("token") or "").strip()
+
+        if enabled and not (
+            len(token) >= 16 and token.isascii() and token.isprintable() and " " not in token
+        ):
+            response.status = 400
+            return {
+                "status": "error",
+                "message": "Token must be at least 16 printable characters without spaces",
+            }
+
+        config["wsTokenEnabled"] = enabled
+        config["wsToken"] = token
+        save_security_config(config)
+        return {"status": "success", "message": "WebSocket token updated"}
+
+    return {
+        "enabled": config.get("wsTokenEnabled", False),
+        "token": config.get("wsToken", ""),
+    }
 
 
 @app.route("/api/login", method="POST")
