@@ -91,8 +91,7 @@ function WebSocketToken() {
         <div className="col col-12 wallcontroller__container">
             <h2 className="mb-4"> WebSocket Token</h2>
             <p className="text-muted">
-                When enabled, control systems connecting to wss://&lt;device&gt;:8765 must send
-                this token in the <code>X-Api-Key</code> header.
+                When enabled, Q-SYS needs to authenticate using this token.
             </p>
             {editMode ? (
                 <>
