@@ -15,7 +15,7 @@ function NetworkSettings() {
             setConfig(data);
             setCurrentConfig(data);
         })
-        .catch(err => setStatus(`Failed to load: ${err}`));
+        .catch(err => setErrorStatus(`Failed to load: ${err}`));
     }, []);
 
     const handleChange = (e) => {
@@ -123,7 +123,7 @@ function NetworkSettings() {
                   </>
                 )}
 
-                {status && <div className="mt-3 alert alert-info">{status}</div>}
+                <StatusMessage message={status} onClear={clearStatus} />
             </div>
         </>
     )

@@ -1,0 +1,116 @@
+// Bootstrap theme derived from the Touch Forge logo (slate #2c3941 on white).
+// Variables must be set before Bootstrap is imported so every derived color
+// (buttons, focus rings, dropdown/active states, progress bars) follows the brand.
+
+$brand-slate:       #2c3941;
+$brand-slate-light: #5b6b77;
+
+$primary:   $brand-slate;
+$secondary: $brand-slate-light;
+$success:   #2f7d5b;
+$info:      #3d6f8e;
+$warning:   #c98a1b;
+$danger:    #b2413b;
+$light:     #f3f5f7;
+$dark:      #1c252b;
+
+$body-bg:             #eef1f4;
+$body-color:          #1f2a31;
+$body-secondary-color: #5f6c75;
+$border-color:        #d5dbe0;
+$link-color:          $brand-slate;
+$link-hover-color:    #000;
+
+// Logo tile has soft corners, mirror that
+$border-radius:    .5rem;
+$border-radius-sm: .375rem;
+$border-radius-lg: .75rem;
+
+$font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight:   600;
+$headings-color:         $brand-slate;
+
+$input-focus-border-color: $brand-slate-light;
+$focus-ring-color:         rgba($brand-slate, .25);
+$btn-font-weight:          500;
+
+$navbar-light-color:        rgba($brand-slate, .7);
+$navbar-light-hover-color:  $brand-slate;
+$navbar-light-active-color: $brand-slate;
+
+$progress-height: 1.25rem;
+
+@import "bootstrap/scss/bootstrap";
+
+// ---- App layout -----------------------------------------------------------
+
+body {
+  padding-top: 5.5rem;
+  min-height: 100vh;
+}
+
+.app-navbar {
+  background-color: #fff;
+  border-bottom: 1px solid $border-color;
+  box-shadow: 0 1px 6px rgba($brand-slate, .06);
+
+  .nav-link {
+    font-weight: 500;
+    padding-inline: 1rem !important;
+    border-bottom: 2px solid transparent;
+
+    &.active {
+      border-bottom-color: $brand-slate;
+    }
+  }
+}
+
+.app-main {
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.app-card {
+  background-color: #fff;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 12px rgba($brand-slate, .06);
+  padding: 2rem;
+
+  @include media-breakpoint-down(sm) {
+    padding: 1.25rem;
+  }
+
+  h2 {
+    padding-bottom: .75rem;
+    margin-bottom: 1.5rem !important;
+    border-bottom: 1px solid $border-color;
+  }
+
+  h5.form-label,
+  label.form-label {
+    font-size: .8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: $body-secondary-color;
+    margin-bottom: .25rem;
+  }
+
+  .form-control-plaintext {
+    font-weight: 500;
+  }
+}
+
+.upload_dropZone {
+  background-color: $light;
+  color: $brand-slate;
+  outline-color: $brand-slate-light;
+  border-radius: $border-radius;
+
+  &.highlight {
+    background-color: tint-color($brand-slate, 88%);
+    outline-color: $brand-slate;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, use } from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './theme.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
 import NetworkSettings from './NetworkSettings';
@@ -63,7 +63,7 @@ function App() {
   if (loading) {
     return (
       <div className='container-fluid d-flex justify-content-center align-items-center' style={{height: '100vh'}}>
-        <div className='spinner-border' role='status'>
+        <div className='spinner-border text-primary' role='status'>
           <span className='visually-hidden'>Loading...</span>
         </div>
       </div>
@@ -80,7 +80,7 @@ function App() {
         authenticated={authenticated}
         setAuthenticated={setAuthenticated}
       />
-      <div className='container-fluid wallcontroller__container'>
+      <main className='app-main'><div className='app-card'>
         {!authenticated ? ( <Login setAuthenticated={setAuthenticated} setPage={setPage} pages={pages} />) :
         page==pages[1] ? ( <NetworkSettings />) :
         page==pages[2] ? (<Security 
@@ -90,7 +90,7 @@ function App() {
         page==pages[3] ? ( <Maintenance />) :
           <Maintenance />
         }
-      </div>
+      </div></main>
     </>
   );
 }

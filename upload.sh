@@ -1,11 +1,8 @@
-ip=192.168.177.250
-
-
-sshpass -f "passwordfile" ssh root@$ip "mkdir -p /usr/bin/webserver/frontend"
-sshpass -f "passwordfile" scp main.py root@$ip:/usr/bin/webserver/main.py
-sshpass -f "passwordfile" scp webserver.init root@$ip:/etc/init.d/webserver
-sshpass -f "passwordfile" scp ip_tool.py root@$ip:/usr/bin/webserver/ip_tool.py
-sshpass -f "passwordfile" scp -r frontend/dist/ root@$ip:/usr/bin/webserver/frontend/dist
+ssh hilink "mkdir -p /usr/bin/webserver/frontend"
+scp main.py hilink:/usr/bin/webserver/main.py &
+scp webserver.init hilink:/etc/init.d/webserver &
+scp ip_tool.py hilink:/usr/bin/webserver/ip_tool.py &
+scp -r frontend/dist/ hilink:/usr/bin/webserver/frontend &
 echo "Upload complete. Restarting Service"
-sshpass -f "passwordfile" ssh root@$ip "/etc/init.d/webserver restart"
+ssh hilink "/etc/init.d/webserver restart"
 echo "Done"

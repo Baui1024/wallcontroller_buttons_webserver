@@ -1,4 +1,6 @@
 import React from 'react';
+import Logo from './assets/Logo.svg';
+import NodeCore4 from './assets/NodeCore4.svg';
 
 
 function Navigation({  setPage, page, pages, accessControl, authenticated, setAuthenticated }) {
@@ -26,8 +28,11 @@ function Navigation({  setPage, page, pages, accessControl, authenticated, setAu
   };
 
   return (
-   <nav className="navbar navbar-expand-lg fixed-top  bg-primary">
-        <a className="navbar-brand" href="#">Touch Forge Node Core 4 </a>
+   <nav className="navbar navbar-expand-lg fixed-top app-navbar px-2">
+        <a className="navbar-brand" href="#">
+          <img src={Logo} alt="Touch Forge" height="45" className="ms-2" />
+          {/* <img src={NodeCore4} alt="Node Core 4" height="32" /> */}
+        </a>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
         </button>
@@ -47,7 +52,7 @@ function Navigation({  setPage, page, pages, accessControl, authenticated, setAu
                 ))}
                 {accessControl &&  authenticated &&(
                     <>
-                       <button className="btn btn-secondary ms-3" type="button" onClick={handleLogout}>
+                       <button className="btn btn-outline-primary ms-lg-3 my-2 my-lg-0" type="button" onClick={handleLogout}>
                         <i className="bi bi-box-arrow-right me-2"></i>
                         Logout
                        </button>
